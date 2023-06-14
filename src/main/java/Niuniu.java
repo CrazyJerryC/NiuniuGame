@@ -18,17 +18,27 @@ public class Niuniu {
         Set<Game> gameSet = new HashSet<>();
 
         PriorityQueue<Game> firstQueue = new PriorityQueue<>((game1, game2) -> {
-            // 自定义比较逻辑，按照第一道大小降序排列
-            return Integer.compare(game2.getCards()[0].getScore(), game1.getCards()[0].getScore());
+            // 自定义比较逻辑，按照第一道大小降序排列(如果第一道score一样，则比较第二道)
+            return Integer.compare(game2.getCards()[0].getScore() * 1000 + game2.getCards()[1].getScore(),
+                                    game1.getCards()[0].getScore() * 1000 + game1.getCards()[1].getScore());
         });
+
         PriorityQueue<Game> secondQueue = new PriorityQueue<>((game1, game2) -> {
-            // 自定义比较逻辑，按照第二道大小降序排列
-            return Integer.compare(game2.getCards()[1].getScore(), game1.getCards()[1].getScore());
+            // 自定义比较逻辑，按照第二道大小降序排列(如果第二道score一样，则比较第一道)
+            return Integer.compare(game2.getCards()[1].getScore() * 1000 + game2.getCards()[0].getScore(),
+                                    game1.getCards()[1].getScore() * 1000 + game1.getCards()[0].getScore());
         });
+
         PriorityQueue<Game> sumQueue = new PriorityQueue<>((game1, game2) -> {
             // 自定义比较逻辑，按照总和降序排列
             return Integer.compare(game2.getCards()[0].getScore() + game2.getCards()[1].getScore(),
                     game1.getCards()[0].getScore() + game1.getCards()[1].getScore());
+        });
+
+        PriorityQueue<Game> timeQueue = new PriorityQueue<>((game1, game2) -> {
+            // 自定义比较逻辑，按照倍数和降序排列
+            return Integer.compare(game2.getCards()[0].getCardType().getTimes() + game2.getCards()[1].getCardType().getTimes(),
+                    game1.getCards()[0].getCardType().getTimes() + game1.getCards()[1].getCardType().getTimes());
         });
 
 
@@ -62,6 +72,7 @@ public class Niuniu {
                                 firstQueue.offer(game);
                                 secondQueue.offer(game);
                                 sumQueue.offer(game);
+                                timeQueue.offer(game);
                                 gameSet.add(game);
                             }
 
@@ -72,10 +83,12 @@ public class Niuniu {
         }
 
 
-        System.out.println("所有排列组合数量: " + gameSet.size());
-        System.out.println("第一道最大的组合: " + firstQueue.peek());
-        System.out.println("第二道最大的组合: " + secondQueue.peek());
-        System.out.println("总和最大的组合: " + sumQueue.peek());
+        System.out.println("所有排列组合数量: " + gameSet.size() + "\n");
+        System.out.println("第一道最大的组合: " + firstQueue.peek() + "\n");
+        System.out.println("第二道最大的组合: " + secondQueue.peek() + "\n");
+        System.out.println("总和最大的组合: " + sumQueue.peek() + "\n");
+        System.out.println("倍数之和最大的组合: " + timeQueue.peek() + "\n");
+
 
     }
 

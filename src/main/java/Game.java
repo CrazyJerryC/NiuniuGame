@@ -31,8 +31,6 @@ public class Game {
 
     @Override
     public String toString() {
-        return "Game{" +
-                "cards=" + Arrays.toString(cards) +
-                '}';
+        return "第一道:" + cards[0] + " |  第二道:" + cards[1];
     }
 }

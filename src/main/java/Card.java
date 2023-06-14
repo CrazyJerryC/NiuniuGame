@@ -1,4 +1,6 @@
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Card implements Comparable<Card> {
     int[] values;
@@ -8,16 +10,25 @@ public class Card implements Comparable<Card> {
     public Card(int[] values) {
         this.values = values;
         Arrays.sort(this.values);
-        this.score = values[values.length-1];
+        this.score = values[values.length - 1];
         cardType = CardType.NO_NIU;
-        if (isConsecutive(this.values)){
+
+        if (findFourSameNumber(this.values) > 0) {
+            cardType = CardType.NIU_SITIAO;
+            score = cardType.getScore() + findFourSameNumber(this.values);
+
+        } else if (findThreeSameAndTwoSameNumber(this.values) > 0) {
+            cardType = CardType.NIU_HULU;
+            score = cardType.getScore() + findThreeSameAndTwoSameNumber(this.values);
+
+        } else if (isConsecutive(this.values)) {
             cardType = CardType.NIU_SHUN;
-            if(Arrays.equals(this.values, new int[]{1, 2, 3, 4, 10})){
+            if (Arrays.equals(this.values, new int[]{1, 2, 3, 4, 10})) {
                 score = cardType.getScore() + 4;
-            }else {
+            } else {
                 score = cardType.getScore() + values[4];
             }
-        }else {
+        } else {
             // 遍历所有可能的组合
             for (int i = 0; i < values.length - 2; i++) {
                 for (int j = i + 1; j < values.length - 1; j++) {
@@ -35,12 +46,12 @@ public class Card implements Comparable<Card> {
 //                    System.out.println("Remaining: " + remainingArr[0] + ", " + remainingArr[1]);
 //                    System.out.println("--------------------");
 
-                        if((num1 + num2 + num3) % 10 == 0){
+                        if ((num1 + num2 + num3) % 10 == 0) {
                             int r1 = remainingArr[0];
                             int r2 = remainingArr[1];
-                            if(r1 == r2 && r1 != 5 && r1 != 10){
+                            if (r1 == r2 && r1 != 5 && r1 != 10) {
                                 int tmpScore = CardType.NIU_DUI.getScore() + r1;
-                                if (tmpScore > score){
+                                if (tmpScore > score) {
                                     this.score = tmpScore;
                                     cardType = CardType.NIU_DUI;
                                 }
@@ -48,7 +59,15 @@ public class Card implements Comparable<Card> {
                             }
 
                             CardType tmpType = getCardTypeByMod((r1 + r2) % 10);
-                            int tmpScore = tmpType.getScore() + Math.max(r1,r2);
+                            int tmpScore = tmpType.getScore() + Math.max(r1, r2);
+                            //牛牛的情况下(5,5)或者(10,10)单独计算处理
+                            if (CardType.NIU_10.equals(tmpType)) {
+                                if (r1 == 5) {
+                                    tmpScore = tmpType.getScore() + 10;
+                                } else if (r1 == 10) {
+                                    tmpScore = tmpType.getScore() + 11;
+                                }
+                            }
                             if (tmpScore > score) {
                                 this.score = tmpScore;
                                 cardType = tmpType;
@@ -62,8 +81,41 @@ public class Card implements Comparable<Card> {
         }
 
     }
+
+    //判断是否是4+1
+    private static int findFourSameNumber(int[] arr) {
+        int[] count = new int[11]; // 由于数字的范围是1到10，所以创建长度为11的计数数组
+
+        for (int num : arr) {
+            count[num]++;
+            if (count[num] == 4) {
+                return num;
+            }
+        }
+
+        return -1;
+    }
+
+    //判断是否是3+2
+    private static int findThreeSameAndTwoSameNumber(int[] arr) {
+        Map<Integer, Integer> countMap = new HashMap<>();
+        for (int num : arr) {
+            countMap.put(num, countMap.getOrDefault(num, 0) + 1);
+
+        }
+
+        if (countMap.size() == 2) {
+            for (Map.Entry<Integer, Integer> entry : countMap.entrySet()) {
+                if (entry.getValue() == 3) return entry.getKey();
+            }
+        }
+
+        return -1;
+    }
+
+    //判断是否是顺子
     private static boolean isConsecutive(int[] arr) {
-        if(Arrays.equals(arr, new int[]{1, 2, 3, 4, 10})){
+        if (Arrays.equals(arr, new int[]{1, 2, 3, 4, 10})) {
             return true;
         }
 
@@ -163,10 +215,6 @@ public class Card implements Comparable<Card> {
 
     @Override
     public String toString() {
-        return "Card{" +
-                "values=" + Arrays.toString(values) +
-                ", cardType=" + cardType +
-                ", score=" + score +
-                '}';
+        return "(" + cardType.getType() + "-" + cardType.getTimes() + "倍) " + Arrays.toString(values) + ", score=" + score;
     }
 }
