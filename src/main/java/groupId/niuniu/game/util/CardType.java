@@ -1,3 +1,5 @@
+package groupId.niuniu.game.util;
+
 public enum CardType {
     NIU_SITIAO("四条", 150,9), // 四条
     NIU_HULU("葫芦", 140,8), // 葫芦

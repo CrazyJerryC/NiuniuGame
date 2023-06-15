@@ -1,3 +1,5 @@
+package groupId.niuniu.game.util;
+
 import java.util.*;
 
 public class Niuniu {
