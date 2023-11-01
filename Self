@@ -1,4 +1,5 @@
 Subject: Year-End Self-Assessment - Leadership Principles
+[发送会议邀请](mailto:recipient@example.com?subject=Meeting%20Invite&body=Meeting%20Details:%0A%0A-Date:%20[Enter%20Date]%0A-Time:%20[Enter%20Time]%0A-Location:%20[Enter%20Location]%0A%0APlease%20RSVP%20by%20[RSVP%20Date])
 
 Dear [Manager's Name],
 
