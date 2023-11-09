@@ -12,6 +12,7 @@ public class GameController {
     @Autowired
     private GameService gameService;
 
+
     @GetMapping("calculate")
     public String calculate(String number) {
         if (number != null && number.length() == 10) {
